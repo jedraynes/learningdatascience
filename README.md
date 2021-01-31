@@ -6,7 +6,7 @@
 The purpose of this repository is to be a dump of all data science files related to courses taken via Coursera. I'll update this README to serve as an index for the folders within.
 
 ### Index
-1. **John's Hopkins Data Science Specialization:** This is a 10-course series starting from the basics to advanced analyses using R. You can read more about this course on [it's Coursera page](https://www.coursera.org/specializations/jhu-data-science).
+1. **John's Hopkins Data Science Specialization:** This is a 10-course series starting from the basics to advanced analyses using R. You can read more about this course on it's [Coursera page](https://www.coursera.org/specializations/jhu-data-science).
 
 
 ---
