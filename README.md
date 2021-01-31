@@ -1,6 +1,6 @@
 # Coursera Data Science Repository
 
-## Overview
+### Overview
 The purpose of this repository is to be a dump of all data science files related to courses taken via Coursera. I'll update this README to serve as an index for the folders within.
 
 ---
