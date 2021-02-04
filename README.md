@@ -10,6 +10,6 @@ The purpose of this repository is to be a dump of all data science files related
 
 
 ---
-Feel free to check out my personal blog at [jedraynes.com](https://www.jedraynes.com). There, you can find ways to contact me via a contact for, or, over [LinkedIn](https://www.linkedin.com/in/jedraynes/).
+Feel free to check out my personal blog at [jedraynes.com](https://www.jedraynes.com). There, you can find ways to contact me via a contact form, or, over [LinkedIn](https://www.linkedin.com/in/jedraynes/).
 
 jedraynes
