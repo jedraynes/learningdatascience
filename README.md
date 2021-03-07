@@ -6,7 +6,18 @@
 The purpose of this repository is to be a centralized directory of all files related to data science courses.
 
 ### # Coursera
-1. **Johns Hopkins Data Science Specialization:** This is a 10-course series starting from the basics to advanced analyses using R. You can read more about this course on its [Coursera page](https://www.coursera.org/specializations/jhu-data-science).
+1. **Johns Hopkins Data Science Specialization:** This is a 10-course series starting from the basics to advanced analysis using R. You can read more about this course on its [Coursera page](https://www.coursera.org/specializations/jhu-data-science).
+
+    * The Data Scientist's Toolbox
+    * R Programming
+    * Getting and Cleaning Data
+    * Exploratory Data Analysis
+    * Reproducible Research
+    * Statistical Inference
+    * Regression Models
+    * Practical Machine Learning
+    * Developing Data Products
+    * Data Science Capstone
 
 ### # Udacity
 
