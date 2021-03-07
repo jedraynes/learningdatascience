@@ -19,10 +19,10 @@ The purpose of this repository is to be a centralized directory of all files and
     * Data Science Capstone
 
 ### # Udacity Nanodegrees
-1. **Business Analytics**
-2. **Data and Analytics**
-3. **Artificial Intelligence: Machine Learning**
-4. **Programming for Data Science with Python**
+1. [**Business Analytics**](https://github.com/jedraynes/learningdatascience/blob/main/Certificates/Udacity/Business%20Analytics.pdf)
+2. [**Data and Analytics**](https://github.com/jedraynes/learningdatascience/blob/main/Certificates/Udacity/Data%20and%20Analytics.pdf)
+3. [**Artificial Intelligence: Machine Learning**](https://github.com/jedraynes/learningdatascience/blob/main/Certificates/Udacity/Artificial%20Intelligence%20Machine%20Learning.pdf)
+4. [**Programming for Data Science with Python**](https://github.com/jedraynes/learningdatascience/blob/main/Certificates/Udacity/Programming%20for%20Data%20Science%20with%20Python.pdf)
 5. **Data Analyst**
 
 ### # edX
