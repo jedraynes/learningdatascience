@@ -26,7 +26,7 @@ The purpose of this repository is to be a centralized directory of all files and
 5. **Data Analyst**
 
 ### # edX
-1. **GTx MGT6203x: Data Analytics for Business**
+1. [**GTx MGT6203x: Data Analytics for Business**](https://github.com/jedraynes/learningdatascience/blob/main/Certificates/edX/GTx%20MGT6203x%20Data%20Analytics%20for%20Business.pdf)
 
 
 ---
