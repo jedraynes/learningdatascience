@@ -7,12 +7,12 @@ The purpose of this repository is to be a centralized directory of all files and
 
 ### # Coursera
 1. **Johns Hopkins Data Science Specialization:** This is a 10-course series starting from the basics to advanced analysis using R. You can read more about this course on its [Coursera page](https://www.coursera.org/specializations/jhu-data-science).
-    * The Data Scientist's Toolbox
-    * R Programming
-    * Getting and Cleaning Data
-    * Exploratory Data Analysis
-    * Reproducible Research
-    * Statistical Inference
+    * [**The Data Scientist's Toolbox**](https://github.com/jedraynes/learningdatascience/blob/main/Certificates/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/The%20Data%20Scientist's%20Toolbox.pdf)
+    * [**R Programming**](https://github.com/jedraynes/learningdatascience/blob/main/Certificates/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/R%20Programming.pdf)
+    * [**Getting and Cleaning Data**](https://github.com/jedraynes/learningdatascience/blob/main/Certificates/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/Getting%20and%20Cleaning%20Data.pdf)
+    * [**Exploratory Data Analysis**](https://github.com/jedraynes/learningdatascience/blob/main/Certificates/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/Exploratory%20Data%20Analysis.pdf)
+    * [**Reproducible Research**](https://github.com/jedraynes/learningdatascience/blob/main/Certificates/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/Reproducible%20Research.pdf)
+    * [**Statistical Inference**](https://github.com/jedraynes/learningdatascience/blob/main/Certificates/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/Statistical%20Inference.pdf)
     * Regression Models
     * Practical Machine Learning
     * Developing Data Products
