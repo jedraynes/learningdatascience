@@ -17,8 +17,8 @@ The purpose of this repository is to be a centralized directory of all files and
     * **Statistical Inference**: [*Certificate*](https://github.com/jedraynes/learningdatascience/blob/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/6%20Statistical%20Inference/Statistical%20Inference.pdf) / [*Files*](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/6%20Statistical%20Inference)
     * **Regression Models**: [*Certificate*](https://github.com/jedraynes/learningdatascience/blob/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/7%20Regression%20Models/Regression%20Models.pdf) / [*Files*](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/7%20Regression%20Models)
     * **Practical Machine Learning**:  [*Certificate*](https://github.com/jedraynes/learningdatascience/blob/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/8%20Practical%20Machine%20Learning/Practical%20Machine%20Learning.pdf) / [*Files*](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/8%20Practical%20Machine%20Learning)
-    * **Developing Data Products**:  [*Certificate*]() / [*Files*](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/9%20Developing%20Data%20Products)
-    * **Data Science Capstone**:  [*Certificate*]() / [*Files*]()
+    * **Developing Data Products**:  *Certificate* / [*Files*](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/9%20Developing%20Data%20Products)
+    * **Data Science Capstone**:  *Certificate* / *Files*
 
 ### # Udacity Nanodegrees
 1. **Business Analytics**:  [*Certificate*]() / [*Files*]()
