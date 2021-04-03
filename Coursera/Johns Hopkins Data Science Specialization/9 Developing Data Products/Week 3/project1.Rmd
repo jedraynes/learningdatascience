@@ -1,0 +1,90 @@
+---
+title: "Minimum Wage: 1968 to 2019 Actual vs. Inflation Adjusted"
+author: "jedraynes"
+date: "4/1/2021"
+output: ioslides_presentation
+  #html_document: 
+    #keep_md: yes
+---
+
+## # Overview and Sources
+
+
+**Created:** April 1, 2021
+
+The dataset used in this project was initially scraped from the US Department of Labor. Note, this dataset uses the minimum wage (and takes the lower value in years where there are multiple) which represents the phase-in amounts when the law was enacted to include new populations.
+
+## # Data Wrangling 1
+
+
+I'll start by loading in the required packages. For this project, I'm using 'dplyr' to clean the data, 'plotly' to layer in the interactivity, 'ggplot2' to actually create the plot, 'data.table' to use the copy function, 'reshape2' to melt the dataframe, and 'htmlwidgets' and 'htmltools' to save the plot down for the website.
+
+```{r, message = FALSE}
+# load libraries
+suppressPackageStartupMessages(pacman::p_load(dplyr,
+                                              plotly,
+                                              ggplot2,
+                                              data.table, 
+                                              reshape2, 
+                                              htmlwidgets, 
+                                              htmltools))
+```
+
+## # Data Wrangling 2
+
+Next, I'll load and inspect the data.
+
+```{r}
+# set the working directory
+setwd('C:\\Users\\Jed\\iCloudDrive\\Documents\\Learn\\R\\Johns Hopkins Data Science Specialization\\9 Developing Data Products\\Week 3')
+
+# load data
+inflage <- read.csv('inflage.csv')[, c(-1, -3)]
+inflage_copy <- copy(inflage)
+
+# inspect
+#head(inflage)
+```
+
+## # Data Wrangling 3
+
+To get the data organized for plotting, I'll rename the columns and unpivot the wage columns.
+
+```{r}
+# rename columns
+names(inflage) <- c('Year', 'Minimum Wage, Actual', 'Minimum Wage, Inflation Adjusted')
+
+# unpivot
+inflage <- inflage %>% 
+  melt(id.var = 'Year')
+```
+
+## # Plot
+
+---
+
+```{r, echo = FALSE, fig.width = 10, fig.align = 'center'}
+# plot
+inflage_plot <- ggplot(inflage, aes(x = Year, y = value)) +
+  geom_line(aes(color = variable)) + 
+  ggtitle('Minimum Wage Actual vs. Inflation Adjusted 1968 to 2019') + 
+  xlab('Year') + 
+  ylab('Value') + 
+  theme_bw() + 
+  theme(panel.background = element_blank(), 
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        legend.position = 'bottom', 
+        legend.title = element_blank(), 
+        plot.title = element_text(face = 'bold', hjust = 0.5))
+
+#inflage_plot
+
+# plotly convert
+(gg <- ggplotly(inflage_plot))
+
+# save down
+current_wd <- getwd()
+saveWidget(gg, 'inflage_plot.html')
+```
+

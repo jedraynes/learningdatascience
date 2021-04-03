@@ -1,0 +1,147 @@
+---
+title: "Reproducible Research: Project 2"
+author: "jedraynes"
+# date: "2/9/2021"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r, message = FALSE}
+# set working directory
+setwd("C:\\Users\\Jed\\iCloudDrive\\Documents\\Learn\\R\\Johns Hopkins Data Science Specialization\\5 Reproducible Research\\Week 4\\Project 2")
+
+# install packages
+# install.packages("ggplot2")
+# install.packages("dplyr")
+# install.packages("lubridate")
+# install.packages("data.table")
+
+# load packages
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(data.table)
+
+# prevent scientific notation
+options(scipen = 999)
+```
+## Severe Weather Events and the Effect on Population Health and the Economy
+
+### # Synopsis
+***
+
+This analysis looks to quantify and plot the impact of natural disasters in the population and economy in the United States. The data used in this analysis is sourced from the US National Oceanic and Atmospheric Adminsitration's (NOAA) database. It is further sourced from the National Weather Service. The data spans from 1950 to the end of November 2011. Thus, all information presented, after any data transformation, is presented as the total for that date range.
+
+### # Data Processing
+***
+
+First, I'm going to read in the file and inspect the data.
+```{r}
+# load the data
+df <- read.csv(".\\Data\\repdata_data_StormData.csv.bz2")
+
+# inspect the data
+head(df)
+str(df)
+```
+
+Now I'm going to inspect for NAs within the data to clean up our dataframe a bit.
+```{r}
+# inspect the dimensions of the data
+dim(df)
+
+# determine the amount of nulls within each column
+colSums(is.na(df))
+```
+We can see that the "COUNTYENDN" column is completely NA, column "F" has a large quantity of NAs, and columns "LATITUDE" and "LATITUDE_E" have 47 and 40 NAs, respectively. Given this, to clean our dataframe a bit, let's remove the the first two columns and then the rows from the last two columns.
+```{r}
+# define cols to drop and drop them
+col_drop <- c("COUNTYENDN", "F")
+df <- df[, !names(df) %in% col_drop]
+
+# drop the NAs rows remaining
+df <- df[complete.cases(df),]
+```
+### # Analysis
+***
+
+Now with our dataset cleaned, let's get into the analysis. The first question we want to answer is what type of event has the largest impact on population health. Population health is a general term, but for the purposes of this exercise, we're going to define it as the sum total of fatalities and injuries. We'll call this field "Human Damage". We'll also plot our results so it's clear to see which events have a larger impact.
+```{r}
+# create the human damage field
+df$Human_Damage <- df$INJURIES + df$FATALITIES
+
+# transform the dataset to be grouped by the event type and then summarized by the human damages
+df_population_health <- df %>%
+  group_by(EVTYPE) %>%
+  summarize(Human_Damage = sum(Human_Damage))
+
+# remove events with no human damage and sort high to low
+df_population_health <- df_population_health %>%
+  filter(Human_Damage != 0) %>%
+  arrange(-Human_Damage)
+
+# plot the top results
+ggplot(df_population_health[1:10,], aes(x = Human_Damage, y = reorder(EVTYPE, Human_Damage))) + 
+  geom_bar(stat = "identity", fill = "cadetblue4") + 
+  theme_bw() + 
+  xlab("Human Damage") + 
+  ylab("Event Type") + 
+  ggtitle("Top 10 Event Types and the Effect on Population Health") + 
+  labs(caption = "Population health is defined as total injuries and fatalities for a given event. (Lower is better)") + 
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "grey"))
+```
+
+Next, let's take a look at which type of event has the greatest economic consequences. We'll make a new column called "Economic Impact" which will be used to assess the total dollar value consequence by event type. We have two main fields that will be the basis for this column: property damage and crop damange. Each column has a number as well as a respective multiplier. Per the source information, the multipliers to focus on are "K" for thousands, "M" for millions, and "B" for billions.
+```{r}
+# make the multiplier an uppercase to normalize the format across the dataset
+df$PROPDMGEXP <- toupper(df$PROPDMGEXP)
+df$CROPDMGEXP <- toupper(df$CROPDMGEXP)
+
+# transform the dataset be the actual dollar value rather than a subtotaled one
+df_economic_impact <- df %>%
+  mutate(multiplier_prop = ifelse(PROPDMGEXP == "K", 3,
+                                  ifelse(PROPDMGEXP == "M", 6,
+                                         ifelse(PROPDMGEXP == "B", 9, 
+                                                ifelse(PROPDMGEXP == "H", 2, 
+                                                       ifelse(suppressWarnings(!is.na(as.numeric(PROPDMGEXP))), as.numeric(PROPDMGEXP), 0)))))) %>%
+  mutate(multiplier_crop = ifelse(CROPDMGEXP == "K", 3,
+                                  ifelse(CROPDMGEXP == "M", 6,
+                                         ifelse(CROPDMGEXP == "B", 9, 
+                                                ifelse(CROPDMGEXP == "H", 2, 
+                                                       ifelse(suppressWarnings(!is.na(as.numeric(CROPDMGEXP))), as.numeric(CROPDMGEXP), 0)))))) %>%
+  mutate(Property_Damage_USD = PROPDMG * 10 ** multiplier_prop) %>%
+  mutate(Crop_Damage_USD = CROPDMG * 10 ** multiplier_crop)
+
+
+# select only the necessary column
+df_economic_impact <- df_economic_impact[, c("EVTYPE", "Property_Damage_USD", "Crop_Damage_USD")]
+
+# sum the property and crop dollar values to create our economic impact field
+df_economic_impact$Economic_Impact <- 
+  df_economic_impact$Property_Damage_USD + df_economic_impact$Crop_Damage_USD
+
+# remove events with no economic impact, group by event type, summarize by the sum of the economic impact, and arrange it high to low
+df_economic_impact <- df_economic_impact %>%
+  filter(Economic_Impact != 0) %>%
+  group_by(EVTYPE) %>%
+  summarize(Economic_Impact = sum(Economic_Impact)) %>%
+  arrange(-Economic_Impact)
+
+# plot the top results
+ggplot(df_economic_impact[1:10,], aes(x = Economic_Impact/1000000, y = reorder(EVTYPE, Economic_Impact))) + 
+  geom_bar(stat = "identity", fill = "cadetblue4") + 
+  theme_bw() + 
+  xlab("Economic Impact ($ in millions)") + 
+  ylab("Event Type") + 
+  ggtitle("Top 10 Event Types and the Economic Impact") + 
+  labs(caption = "Economic impact is the USD value of property damage and crop damage from the event. (Lower is better)") + 
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "grey"))
+```
+
+### # Results
+***
+
+After inspecting the resulting plots, it's clear that **tornadoes** cause the most damage to the population as measured by total fatalities and injuries whereas **floods** cause the most economic damage as measured by the economic impact of property and crop damage. Natural disasters take a toll on our way of life, and it's evident that it spans beyond simple damage. Mitigating steps should be made to reduce both the resulting damage to the population and economy as well as improving the environmental conditions globally to prevent, in whatever way we can, these events.
+
+

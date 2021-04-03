@@ -1,0 +1,124 @@
+---
+title: "Regression Models Week 4 Project 1"
+author: "jedraynes"
+date: "3/16/2021"
+output:
+  html_document:
+    keep_md: yes
+  pdf_document: default
+---
+
+```{r, results = FALSE}
+# load libraries
+suppressMessages(library(dplyr))
+suppressMessages(library(ggplot2))
+
+# load data
+data(mtcars)
+```
+
+# Regression Models Week 4 Project 1
+
+
+## # Executive Summary
+
+-----
+
+In this project, we'll explore two main requests:
+
+1. Is an automatic or manual transmission better for MPG?
+2. Quantify the MPG difference between automatic and manual transmissions.
+
+For the purposes of this project, we'll be using the 'mtcars' data set. Results can be found at the bottom of this document.
+
+## # EDA
+
+-----
+
+Let's start with some light exploratory data analysis.
+
+```{r, fig.height = 3, fig.width = 5}
+# inspect data - hidden to prevent page overage
+# head(mtcars)
+# str(mtcars)
+
+# plot
+ggplot(mtcars, aes(x = as.factor(am), y = mpg)) + 
+  geom_boxplot(aes(fill = as.factor(am))) + 
+  ggtitle('Box Plot: MPG vs. Transmission Types') + 
+  xlab('Transmission Type') +
+  ylab('MPG') + 
+  labs(fill = 'Transmission Type') + 
+  scale_fill_discrete(name = 'Transmission Type', labels = c('0: Automatic', '1: Manual')) + 
+  theme_classic()
+```
+
+At first glance, it appears that manual transmission types (type == 1) have a higher median MPG compared to automatic transmission types (type == 0). Before we get into our models, let's transform our dataset a bit to make it easier to comprehend. First, we'll encode character values for the transmission type.
+
+```{r}
+# cleaned df
+df <- mtcars %>%
+  mutate(trans = ifelse(am == 0, 'Automatic', 'Manual'))
+```
+
+Next, we'll make our first model: a simple linear model. We'll regress MPG and transmission type.
+```{r}
+# linear model
+model1 <- lm(mpg ~ trans, data = df)
+
+# view the summary of the model
+summary(model1)
+```
+
+```{r, fig.show='hide'}
+# plot residuals - hidden from output to prevent the report from being too long
+plot(model1)
+```
+
+From the summary statistics of the model, we can see that, for automatic transmissions, the mean MPG is 17.147. However, adding in the fact that a vehicle is a manual, increases the MPG by 7.245. This means, per our linear model, that manual transmissions are better for MPG than automatic. Also, we can quantify this difference, assuming no other vehicle factors, as a 7.245 MPG increase for manuals over automatics.
+
+To support our analysis, we'll fit a second model: a multiple linear model. This will allow us to see if other factors are necessary to determine if manuals truly have higher MPG than automatics. For this model, I'll layer gradually layer in the following variables: cyl, disp, and wt. We'll use ANOVA to see if these factors are worth including in predicting MPG.
+
+```{r}
+# multiple linear models
+model2 <- lm(mpg ~ trans + cyl, data = df)
+model3 <- lm(mpg ~ trans + cyl + disp, data = df) 
+model4 <- lm(mpg ~ trans + cyl + disp + wt, data = df)
+
+# compare models
+anova(model1, model2, model3, model4)
+```
+
+Based on our ANOVA, we can see that the third model actually doesn't provide us with statistical significance. However, the fourth model, with all of our chosen factors does. For this second model analysis. We'll use the fourth model as it has the lowest SSE out of the models fitted.
+
+```{r}
+# summary statistics
+summary(model4)
+```
+
+From the above results, we can see that the MPG impact of the transmission type, with the additional variables is neither statistically significant nor is it as large as our simple linear regression. We'll remove the 'disp' variable to create a fifth model.
+
+```{r}
+# summary statistics
+model5 <- lm(mpg ~ trans + cyl+ wt, data = df)
+
+# summary stats
+summary(model5)
+
+# plot residuals
+par(mfrow = c(2, 2))
+plot(model5)
+```
+
+In this model, holding all else equal, an automatic vehicle has an average MPG of 39.42 whereas a manual vehicle has an average MPG of 39.42 + 0.18 = 39.60 MPG. This means, even still, a manual vehicle offers, on average, greater MPG benefits compared to an automatic vehicle. In our multiple linear regression model, this difference can be quantified as a 0.18 MPG increase favoring manual transmission types. What's important to note is that our multiple linear regression model shows that transManual isn't statistically significant in determining MPG. This suggests that other variables have a greater impact on MPG when taking a holistic approach.
+
+## # Results and Conclusions
+
+-----
+
+As stated above, we fit two models: a simple linear regression model and a multiple linear regression model. Our results, by model, are summarized below.
+
+1. Simple Linear Regression: Manual transmission types offer better MPG by an increase of 7.245 MPG.
+2. Multiple Linear Regression: Manual transmission types offer better MPG by an increase of 0.18 MPG.
+
+However, it's important to note that transmission type alone does not guarantee a higher/lower MPG. It's important to look at other vehicle factors, as we did in our multiple linear regression model, and external factors such as driving style, road conditions, and weather conditions.

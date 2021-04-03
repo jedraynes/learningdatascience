@@ -1,0 +1,80 @@
+---
+title: "Developing Data Products Week 4 Project 1 - Cleaning"
+author: "jedraynes"
+date: "4/2/2021"
+output: html_document
+---
+
+```{r, message = FALSE}
+suppressPackageStartupMessages(pacman::p_load(tidyverse, 
+                                              reshape2))
+```
+
+
+```{r}
+# set working directory
+setwd('C:\\Users\\Jed\\iCloudDrive\\Documents\\Learn\\R\\Johns Hopkins Data Science Specialization\\9 Developing Data Products\\Week 4')
+
+# load data
+btc <- read.csv('BTC-USD.csv')
+eth <- read.csv('ETH-USD.csv')
+spy <- read.csv('SPY.csv')
+
+# inspect
+names(btc) == names(eth)
+names(btc) == names(spy)
+```
+
+
+```{r}
+# select necessary columns
+btc <- btc %>%
+  select(Date, Adj.Close)
+eth <- eth %>%
+  select(Date, Adj.Close)
+spy <- spy %>%
+  select(Date, Adj.Close)
+
+# inspect
+head(btc)
+head(eth)
+head(spy)
+
+# check dimensions
+dim(btc)
+dim(eth)
+dim(spy)
+
+# fix SPY
+spy_fixed <- data.frame(Date = btc$Date)
+spy_fixed <- spy_fixed %>% 
+  left_join(spy, by = 'Date')
+spy_fixed$Adj.Close <- as.numeric(spy_fixed$Adj.Close)
+spy_fixed <- spy_fixed %>% 
+  fill(Adj.Close, .direction = 'downup')
+
+# fix btc
+btc$Adj.Close <- as.numeric(btc$Adj.Close)
+btc <- btc %>% 
+  fill(Adj.Close, .direction = 'downup')
+
+# fix eth
+eth$Adj.Close <- as.numeric(eth$Adj.Close)
+eth <- eth %>% 
+  fill(Adj.Close, .direction = 'downup')
+```
+
+
+```{r}
+# merge the three datasets
+df <- inner_join(btc, eth, by = 'Date') %>%
+  inner_join(spy_fixed, by = 'Date') %>%
+  rename(BTC = Adj.Close.x, 
+         ETH = Adj.Close.y, 
+         SPY = Adj.Close) %>%
+  melt(id = c('Date'))
+
+# export data
+write.csv(df, 'project1_data.csv', row.names = FALSE)
+```
+
