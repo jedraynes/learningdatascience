@@ -30,7 +30,8 @@ The purpose of this repository is to be a centralized directory of all files and
 
 
 ---
-[![image](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/jedraynes/)
+[![image](https://img.shields.io/badge/Personal%20Site-%20-informational?style=flat-square&logo=appveyor)](https://www.linkedin.com/in/jedraynes/)
+[![image](https://img.shields.io/badge/LinkedIn-%20-informational?style=flat-square&logo=appveyor)](https://www.linkedin.com/in/jedraynes/)
 
 
 Feel free to check out my personal blog at jedraynes.com(https://www.jedraynes.com). There, you can find ways to contact me via a contact form, or, over LinkedIn(https://www.linkedin.com/in/jedraynes/).
