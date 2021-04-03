@@ -8,17 +8,17 @@
 The purpose of this repository is to be a centralized directory of all files and certificates related to data science courses.
 
 ### # Coursera
-1. **Johns Hopkins Data Science Specialization:** This is a 10-course series starting from the basics to advanced analysis using R. You can read more about this course on its [Coursera page](https://www.coursera.org/specializations/jhu-data-science).
-    * **The Data Scientist's Toolbox**: Certificate/Files
-    * **R Programming**: Certificate/Files
-    * **Getting and Cleaning Data**: Certificate/Files
-    * **Exploratory Data Analysis**: Certificate/Files
-    * **Reproducible Research**: Certificate/Files
-    * **Statistical Inference**: Certificate/Files
-    * **Regression Models**: Certificate/Files
-    * **Practical Machine Learning**: Certificate/Files
-    * **Developing Data Products**: Certificate/Files
-    * **Data Science Capstone**: Certificate/Files
+1. **Johns Hopkins Data Science Specialization:** This is a 10-course series starting from the basics to advanced analysis using R. You can read more about this course on its [Coursera page](https://www.coursera.org/specializations/jhu-data-science). 
+    * **The Data Scientist's Toolbox**: *Certificate* / *Files*
+    * **R Programming**
+    * **Getting and Cleaning Data**
+    * **Exploratory Data Analysis**
+    * **Reproducible Research**
+    * **Statistical Inference**
+    * **Regression Models**
+    * **Practical Machine Learning**
+    * **Developing Data Products**
+    * **Data Science Capstone**
 
 ### # Udacity Nanodegrees
 1. **Business Analytics**: Certificate/Files
