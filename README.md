@@ -28,7 +28,7 @@ The purpose of this repository is to be a centralized directory of all files and
 5. **Data Analyst**
 
 ### # edX
-1. [**GTx MGT6203x: Data Analytics in Business**(https://github.com/jedraynes/learningdatascience/tree/main/edX/Georgia%20Tech%20MicroMasters/MGT6203x%20Data%20Analytics%20for%20Business)
+1. [**GTx MGT6203x: Data Analytics in Business**](https://github.com/jedraynes/learningdatascience/tree/main/edX/Georgia%20Tech%20MicroMasters/MGT6203x%20Data%20Analytics%20for%20Business)
 
 
 ---
