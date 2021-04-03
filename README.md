@@ -1,3 +1,4 @@
+<base target="_blank">
 # Data Science Repository
 
 *Note 04/02/21: Files/links coming soon!*
@@ -30,7 +31,7 @@ The purpose of this repository is to be a centralized directory of all files and
 
 
 ---
-[![image](https://img.shields.io/badge/Personal%20Site-%20-informational?style=flat-square&logo=appveyor)](https://www.jedraynes.com/){target="_blank"}
-[![image](https://img.shields.io/badge/LinkedIn-%20-informational?style=flat-square&logo=appveyor)](https://www.linkedin.com/in/jedraynes/){target="_blank"}
+[![image](https://img.shields.io/badge/Personal%20Site-%20-informational?style=flat-square&logo=appveyor)](https://www.jedraynes.com/)
+[![image](https://img.shields.io/badge/LinkedIn-%20-informational?style=flat-square&logo=appveyor)](https://www.linkedin.com/in/jedraynes/)
 
 jedraynes
