@@ -1,6 +1,6 @@
 # Getting and Cleaning Data
 
-This respository is all files related to the Getting and Cleaning Data course within Coursera's Johns Hopkins Data Science Specialization. The files and quiz code for each week can be found within its respective folder. The course project is found within week 4 and the description of the project is outlined below.
+This repository is all files related to the Getting and Cleaning Data course within Coursera's Johns Hopkins Data Science Specialization. The files and quiz code for each week can be found within its respective folder. The course project is found within week 4 and the description of the project is outlined below.
 
 **Project 1**
 
@@ -16,6 +16,7 @@ The instructions are as follows:
 The dataset required for this project can be found [here](https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip) and is originally sourced from [here](http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones). For a description of the variables, see the original source link and the features_info.txt file within the UCI HAR Dataset folder in the repository.
 
 ---
-Feel free to check out my personal blog at [jedraynes.com](https://www.jedraynes.com). There, you can find ways to contact me via a contact form or over [LinkedIn](https://www.linkedin.com/in/jedraynes/).
+[![image](https://img.shields.io/badge/Personal%20Site-%20-informational?style=flat-square&logo=appveyor)](https://www.jedraynes.com/)
+[![image](https://img.shields.io/badge/LinkedIn-%20-informational?style=flat-square&logo=appveyor)](https://www.linkedin.com/in/jedraynes/)
 
 jedraynes
