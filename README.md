@@ -1,14 +1,13 @@
 
 # Data Science Repository
 
-
-*Note 04/02/21: Files/links coming soon!*
+*Note 04/14/21: Most courses uploaded!*
 
 ### # Overview
-The purpose of this repository is to be a centralized directory of all files and certificates related to data science courses.
+The purpose of this repository is to be a centralized directory of all files and certificates related to data science courses. Click on a course to redirect to the respective folder within this repository.
 
 ### # Coursera
-1. **Johns Hopkins Data Science Specialization:** This is a 10-course series starting from the basics to advanced analysis using R. You can read more about this course on its [Coursera page](https://www.coursera.org/specializations/jhu-data-science).
+1. [**Johns Hopkins Data Science Specialization:**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization) This is a 10-course series starting from the basics to advanced analysis using R. You can read more about this course on its [Coursera page](https://www.coursera.org/specializations/jhu-data-science).
     * [**The Data Scientist's Toolbox**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/1%20The%20Data%20Scientist's%20Toolbox)
     * [**R Programming**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/2%20R%20Programming)
     * [**Getting and Cleaning Data**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/3%20Getting%20and%20Cleaning%20Data)
@@ -18,7 +17,7 @@ The purpose of this repository is to be a centralized directory of all files and
     * [**Regression Models**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/7%20Regression%20Models)
     * [**Practical Machine Learning**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/8%20Practical%20Machine%20Learning)
     * [**Developing Data Products**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/9%20Developing%20Data%20Products)
-    * **Data Science Capstone**
+    * [**Data Science Capstone**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/10%20Data%20Science%20Capstone)
 
 ### # Udacity Nanodegrees
 1. [**Business Analytics**](https://github.com/jedraynes/learningdatascience/tree/main/Udacity/Business%20Analytics)
