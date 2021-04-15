@@ -1,0 +1,12 @@
+name: Predictionary
+title: Predictionary
+username:
+account: jedraynes
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3942422
+bundleId: 4456033
+url: https://jedraynes.shinyapps.io/Predictionary/
+when: 1618110918.78591
+asMultiple: FALSE
+asStatic: FALSE

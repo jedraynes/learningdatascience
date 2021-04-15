@@ -1,0 +1,131 @@
+---
+title: "Data Science Capstone SBO Model"
+author: "jedraynes"
+date: "4/7/2021"
+output: html_document
+---
+
+```{r setup, message = FALSE, results = 'hide'}
+# setup
+knitr::opts_knit$set(root.dir = 'C:\\Users\\Jed\\iCloudDrive\\Documents\\Learn\\R\\Johns Hopkins Data Science Specialization\\10 Data Science Capstone\\Capstone Project\\final\\en_US')
+```
+
+
+```{r, message = FALSE, results = 'hide'}
+# load libraries
+suppressPackageStartupMessages(pacman::p_load(tidyverse, 
+                                              stopwords, 
+                                              ggplot2, 
+                                              tidytext, 
+                                              reshape2, 
+                                              tm, 
+                                              sbo))
+
+# set seed
+set.seed(1337)
+
+# memory limit
+memory.limit(size = 56000)
+
+# prevent scientific notation
+options(scipen=10000)
+```
+
+
+```{r, warning = FALSE}
+# load in the data
+twitter <- readLines('en_US.twitter.txt')
+news <- readLines('en_US.news.txt')
+blogs <- readLines('en_US.blogs.txt')
+```
+
+
+```{r}
+# convert the data to a dataframe
+twitter <- data.frame(txt = twitter, stringsAsFactors = FALSE)
+news <- data.frame(txt = news, stringsAsFactors = FALSE)
+blogs <- data.frame(txt = blogs, stringsAsFactors = FALSE)
+```
+
+
+```{r}
+# data processing function
+text_process <- function(df) {
+  df_clean <- df %>%
+    mutate(txt = tolower(txt)) %>%
+    mutate(txt = str_remove_all(txt, '[[:punct:]]')) %>%
+    mutate(txt = str_remove_all(txt, '[^[:ascii:]]')) %>%
+    mutate(txt = str_remove_all(txt, '[[:digit:]]')) %>%
+    mutate(txt = str_trim(txt)) %>%
+    mutate(str_squish())
+    # add additional cleaning steps here such as
+    # removing profanity
+    # removing non-words
+    
+
+}
+```
+
+
+```{r}
+# run process function
+twitter <- text_process(twitter)
+news <- text_process(news)
+blogs <- text_process(blogs)
+```
+
+
+```{r}
+# merge dataframes
+all_sources <- rbind(twitter, news)
+all_sources <- rbind(all_sources, blogs)
+```
+
+```{r}
+# n-gram function that tokenizes,
+# sorts by most to least frequent,
+# drops NAs, 
+# adds frequency % and cumulative frequency %,
+# filters to only include if n > 1
+# filters to get desired coverage %
+create_n_gram <- function(df, n, c) {
+  df_n_gram <- df %>%
+    unnest_tokens(output = word, input = txt, token = 'ngrams', n = n) %>%
+    count(word, sort = TRUE) %>%
+    drop_na() %>%
+    mutate(freq = n / sum(n)) %>%
+    mutate(cumulative_sum = cumsum(freq)) %>%
+    filter(n > 1) %>%
+    filter(cumulative_sum <= c)
+}
+```
+
+```{r}
+# create uni-, bi-, and tri-grams
+start_time <- Sys.time()
+all_unigram <- create_n_gram(all_sources, 1, .90)
+Sys.time() - start_time
+
+start_time <- Sys.time()
+all_bigram <- create_n_gram(all_sources, 2, 0.75)
+Sys.time() - start_time
+
+start_time <- Sys.time()
+all_trigram <- create_n_gram(all_sources, 3, 0.67)
+Sys.time() - start_time
+```
+```{r}
+# set wd
+setwd('C:\\Users\\Jed\\iCloudDrive\\Documents\\Learn\\R\\Johns Hopkins Data Science Specialization\\10 Data Science Capstone\\Capstone Project\\n_grams')
+
+# save n-grams as csv files
+write.csv(all_unigram, 'all_unigram.csv', row.names = FALSE)
+write.csv(all_bigram, 'all_bigram.csv', row.names = FALSE)
+write.csv(all_trigram, 'all_trigram.csv', row.names = FALSE)
+```
+
+
+
+
+
+

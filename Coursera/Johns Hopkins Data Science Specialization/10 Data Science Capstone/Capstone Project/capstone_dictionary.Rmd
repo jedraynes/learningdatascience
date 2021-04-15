@@ -1,0 +1,98 @@
+---
+title: 'Data Science Capstone: Dictionary'
+author: "jedraynes"
+date: "4/9/2021"
+output: html_document
+---
+
+```{r setup, message = FALSE, results = 'hide'}
+# setup
+knitr::opts_knit$set(root.dir = 'C:\\Users\\Jed\\iCloudDrive\\Documents\\Learn\\R\\Johns Hopkins Data Science Specialization\\10 Data Science Capstone\\Capstone Project')
+```
+
+
+```{r, message = FALSE, results = 'hide'}
+# load libraries
+suppressPackageStartupMessages(pacman::p_load(tidyverse, 
+                                              data.table))
+
+# set seed
+set.seed(1337)
+
+# prevent scientific notation
+options(scipen=10000)
+```
+
+
+```{r}
+# read in the n-gram listings
+start_time <- Sys.time()
+all_unigram <- fread('n_grams\\all_unigram.csv')[, 1:2]
+all_bigram <- fread('n_grams\\all_bigram.csv')[, 1:2]
+all_trigram <- fread('n_grams\\all_trigram.csv')[, 1:2]
+Sys.time() - start_time
+```
+
+
+```{r}
+# add n_type (i.e., uni-, bi-, tri-gram)
+start_time <- Sys.time()
+all_unigram$n_type <- 'unigram'
+all_bigram$n_type <- 'bigram'
+all_trigram$n_type <- 'trigram'
+Sys.time() - start_time
+```
+```{r}
+# stem and end function
+# trigram (df, 2)
+# bigram (df, 1)
+score <- function(df, end = 2) {
+  # returns a datatable that adds stem and the end
+  df_stem_end <- df %>%
+    mutate(stem = if_else(n_type == 'trigram', word(word, 1, end = end),
+                        if_else(n_type == 'bigram', word(word, 1, end = end), 
+                                'unigram'))) %>%
+    mutate(end = word(word, -1))
+  
+  # returns a lookup table to determine the total denominator given the stem
+  df_denominator <- df_stem_end %>%
+    group_by(stem) %>%
+    summarize(denominator = sum(n))
+  
+  # calculate the score of each outcome
+  df_scored <- df_stem_end %>%
+    left_join(df_denominator, by = 'stem') %>%
+    mutate(score = n / denominator) %>%
+    select(c(n_type, stem, end, score))
+}
+```
+
+
+```{r}
+# add stem and end
+start_time <- Sys.time()
+unigram_scored <- score(all_unigram)
+bigram_scored <- score(all_bigram, 1)
+trigram_scored <- score(all_trigram, 2)
+Sys.time() - start_time
+```
+
+
+```{r}
+# combine the multigram data tables
+start_time <- Sys.time()
+allgram_scored <- rbindlist(list(trigram_scored, bigram_scored, unigram_scored))
+Sys.time() - start_time
+```
+
+
+```{r}
+# set wd
+setwd('C:\\Users\\Jed\\iCloudDrive\\Documents\\Learn\\R\\Johns Hopkins Data Science Specialization\\10 Data Science Capstone\\Capstone Project\\n_grams')
+
+# save
+start_time <- Sys.time()
+write.csv(allgram_scored, 'allgrams_dictionary.csv', row.names = FALSE)
+Sys.time() - start_time
+```
+

@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/752591/cf9d8bb105834522a6d0d1438dc061b4
+bundleId: https://api.rpubs.com/api/v1/document/752591/cf9d8bb105834522a6d0d1438dc061b4
+url: http://rpubs.com/jedraynes/752591
+when: 1618110501.03241

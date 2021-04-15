@@ -1,0 +1,129 @@
+---
+title: 'Data Science Capstone: Markdown Model'
+author: "jedraynes"
+date: "4/9/2021"
+output: html_document
+---
+
+```{r setup, message = FALSE, results = 'hide'}
+# setup
+knitr::opts_knit$set(root.dir = 'C:\\Users\\Jed\\iCloudDrive\\Documents\\Learn\\R\\Johns Hopkins Data Science Specialization\\10 Data Science Capstone\\Capstone Project')
+```
+
+
+```{r, message = FALSE, results = 'hide'}
+# load libraries
+suppressPackageStartupMessages(pacman::p_load(tidyverse, 
+                                              data.table))
+
+# set seed
+set.seed(1337)
+
+# prevent scientific notation
+options(scipen=10000)
+```
+
+
+```{r}
+# read in the dictionary
+dictionary <- fread('n_grams\\allgrams_dictionary.csv')
+```
+
+```{r}
+# set test phrase
+# TODO remove and replace with user input in RShiny
+test_phrase <- 'bottle of'
+```
+
+
+```{r}
+# function to process the string input
+text_process <- function(str) {
+  str %>% 
+    tolower() %>% 
+    str_remove_all('[[:punct:]]') %>%
+    str_remove_all('[^[:ascii:]]') %>%
+    str_remove_all('[\\$]') %>%
+    str_remove_all('[[:digit:]]') %>%
+    str_trim() %>%
+    str_squish()
+}
+```
+
+
+```{r}
+# clean the user input
+processed_input <- text_process(test_phrase)
+
+# order the n_type
+levels(dictionary$n_type) <- c('unigram', 'bigram', 'trigram')
+```
+
+
+```{r}
+# prediction functions
+dict_predict <- function(input, penalty = 1) {
+  dict_predict <- dictionary %>% 
+    filter(stem == input) %>% 
+    mutate(score = score * penalty) %>%
+    select(end, score)
+}
+
+# trigram predict
+tri_predict <- function(df) {
+  # full score trigram predictions
+  predictions <- rbind(predictions, dict_predict(word(processed_input, count - 1, count)))
+  ## penalized bigram predictions
+  predictions <- rbind(predictions, dict_predict(word(processed_input, count, count), 0.40))
+  ## penalized unigram predictions
+  predictions <- rbind(predictions, dict_predict('unigram', 0.40 * 0.40))
+  ## remove the possibility of same-result predictions
+  predictions <- predictions[predictions$end != word(processed_input, count, count), ]
+}
+
+# bigram predict
+bi_predict <- function(df) {
+  ## full score bigram predictions
+  predictions <- rbind(predictions, dict_predict(word(processed_input, count - 1, count)))
+  ## penalized unigram predictions
+  predictions <- rbind(predictions, dict_predict('unigram', 0.40))
+  ## remove the possibility of same-result predictions
+  predictions <- predictions[predictions$end != word(processed_input, count, count), ]
+}
+
+# unigram predict
+uni_predict <- function(df) {
+  ## full score unigram predictions
+  predictions <- rbind(predictions, dict_predict('unigram'))
+  ## remove the possibility of same-result predictions
+  predictions <- predictions[predictions$end != word(processed_input, count, count), ]
+}
+```
+
+
+```{r}
+# length of the input string
+count <- str_count(processed_input, '\\S+')
+
+# initialize empty data table to hold our results
+predictions <- data.table(end = character(), score = numeric())
+```
+
+
+```{r}
+# model
+if (count >= 3) {
+  predictions <- tri_predict(predictions)
+} else if (count > 1) {
+  predictions <- bi_predict(predictions)
+} else {
+  predictions <- uni_predict(predictions)
+}
+
+predictions <- head(predictions, 3)
+```
+
+```{r}
+dictionary %>% filter(stem == 'bottle of')
+```
+
