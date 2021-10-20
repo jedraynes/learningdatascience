@@ -8,9 +8,9 @@ The purpose of this repository is to be a centralized directory of all files and
 
 ### # Coursera
 1. [**Johns Hopkins Data Science Specialization:**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization) This is a 10-course series starting from the basics to advanced analysis using R. You can read more about this course on its [Coursera page](https://www.coursera.org/specializations/jhu-data-science).
-    * [**The Data Scientist's Toolbox**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/1%20The%20Data%20Scientist's%20Toolbox)
-    * [**R Programming**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/2%20R%20Programming)
-    * [**Getting and Cleaning Data**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/3%20Getting%20and%20Cleaning%20Data)
+    * [**The Data Scientist's Toolbox**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/01%20The%20Data%20Scientist's%20Toolbox)
+    * [**R Programming**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/02%20R%20Programming)
+    * [**Getting and Cleaning Data**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/03%20Getting%20and%20Cleaning%20Data)
     * [**Exploratory Data Analysis**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/4%20Exploratory%20Data%20Analysis)
     * [**Reproducible Research**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/5%20Reproducible%20Research)
     * [**Statistical Inference**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/6%20Statistical%20Inference)
