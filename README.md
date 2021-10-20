@@ -11,12 +11,12 @@ The purpose of this repository is to be a centralized directory of all files and
     * [**The Data Scientist's Toolbox**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/01%20The%20Data%20Scientist's%20Toolbox)
     * [**R Programming**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/02%20R%20Programming)
     * [**Getting and Cleaning Data**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/03%20Getting%20and%20Cleaning%20Data)
-    * [**Exploratory Data Analysis**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/4%20Exploratory%20Data%20Analysis)
-    * [**Reproducible Research**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/5%20Reproducible%20Research)
-    * [**Statistical Inference**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/6%20Statistical%20Inference)
-    * [**Regression Models**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/7%20Regression%20Models)
-    * [**Practical Machine Learning**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/8%20Practical%20Machine%20Learning)
-    * [**Developing Data Products**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/9%20Developing%20Data%20Products)
+    * [**Exploratory Data Analysis**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/04%20Exploratory%20Data%20Analysis)
+    * [**Reproducible Research**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/05%20Reproducible%20Research)
+    * [**Statistical Inference**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/06%20Statistical%20Inference)
+    * [**Regression Models**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/07%20Regression%20Models)
+    * [**Practical Machine Learning**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/08%20Practical%20Machine%20Learning)
+    * [**Developing Data Products**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/09%20Developing%20Data%20Products)
     * [**Data Science Capstone**](https://github.com/jedraynes/learningdatascience/tree/main/Coursera/Johns%20Hopkins%20Data%20Science%20Specialization/10%20Data%20Science%20Capstone)
 
 ### # Udacity Nanodegrees
