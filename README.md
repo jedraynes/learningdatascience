@@ -1,7 +1,7 @@
 
 # Data Science Repository
 
-*Note 10/19/21: Links should be fixed. I'm currently taking courses and should be uploading the related files soon.*
+*Note 10/19/21: Links should be fixed. I'm currently taking courses and will upload the related files soon.*
 
 ### # Overview
 The purpose of this repository is to be a centralized directory of all files and certificates related to data science courses. Click on a course to redirect to the respective folder within this repository.
