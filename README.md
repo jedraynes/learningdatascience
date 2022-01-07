@@ -29,6 +29,9 @@ The purpose of this repository is to be a centralized directory of all files and
 ### # edX
 1. [**GTx MGT6203x: Data Analytics in Business**](https://github.com/jedraynes/learningdatascience/tree/main/edX/Georgia%20Tech%20MicroMasters/MGT6203x%20Data%20Analytics%20for%20Business)
 
+### # Georgetown MSBA
+1. [**OPIM 602 - Machine Learning I**](https://github.com/jedraynes/learningdatascience/tree/main/Georgetown%20MSBA/OPIM%20602%20-%20Machine%20Learning%20I/Project%202)
+
 
 ---
 [![image](https://img.shields.io/badge/Personal%20Site-%20-informational?style=flat-square&logo=appveyor)](https://www.jedraynes.com/)
