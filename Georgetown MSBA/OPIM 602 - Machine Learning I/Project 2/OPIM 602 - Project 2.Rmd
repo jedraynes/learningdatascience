@@ -1,0 +1,700 @@
+---
+title: "OPIM 602 - Project 2"
+author: "Jed Raynes"
+date: "11/16/2021"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+# if pacman is not installed, install the package
+if (!require("pacman")) install.packages("pacman")
+
+# load packages
+suppressPackageStartupMessages(pacman::p_load(tidyverse,
+                                              # for r markdown
+                                              knitr, 
+                                              # used for loading excel files
+                                              readxl,
+                                              # used for merging plots together
+                                              cowplot,
+                                              # used for cube root,
+                                              GGally,
+                                              # grab the regression equation
+                                              equatiomatic,
+                                              # used for VIF / multicollinearity
+                                              car,
+                                              # used for creating dummy variables
+                                              fastDummies,
+                                              # used for data frame manipulation
+                                              reshape2,
+                                              # used to train models and ML output
+                                              caret,
+                                              # used for model training
+                                              MASS,
+                                              # used for glm stepwise
+                                              leaps,
+                                              # used for glm subsets
+                                              bestglm,
+                                              # used for metrics
+                                              MLmetrics,
+                                              # used for logistic model results
+                                              ROSE,
+                                              # used to compare regression results
+                                              stargazer,
+                                              # used for normalizing data
+                                              scales,
+                                              # test~~~~~~~~~~~~~~~
+                                              tidymodels,
+                                              glmnet))
+
+# set-up options
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      root.dir = "C:/Users/jedr1/iCloudDrive/Documents/Georgetown University/Fall 2021/OPIM 602 Machine Learning I/Projects/Project 2",
+                      cache.extra = rand_seed)
+
+# define theme
+ggplot_theme <- theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5,
+                                  face = "bold"),
+        plot.subtitle = element_text(hjust = 0.5),
+        plot.caption = element_text(hjust = 0),
+        axis.line = element_line(color = "grey"),
+        axis.ticks = element_line(color = "grey"))
+```
+
+```{r}
+# background
+
+# A large company named Canterra, employs, at any given point of time, around 4000 employees. However, every year, around 15% of its employees leave the company and need to be replaced with the talent pool available in the job market. The management believes that this level of attrition (employees leaving, either on their own or because they got fired) is bad for the company, because of the following reasons:
+# 
+# The former employees’ projects get delayed, which makes it difficult to meet timelines, resulting in a reputation loss among consumers and partners
+# A sizeable department has to be maintained, for the purposes of recruiting new talent
+# More often than not, the new employees have to be trained for the job and/or given time to acclimatize themselves to the company
+# The management hypothesizes that higher job satisfaction and a higher number of total working years will reduce employee attrition. Additionally, the marketing management was interested to know if demographic variables such as gender, education and age affect employee attrition. Hence, the management has contracted you as a consultant to understand whether these two factors they should focus on, in order to curb attrition. In other words, they want to know if changes in their internal and external recruitment strategies would help retain employees.
+```
+
+```{r}
+# key questions
+
+# Identify whether job satisfaction, years at the company, and a higher number of total working years lead to employee attrition within the company? (20 points) Additionally, do demographic variables such as gender, education, and age affect employee attrition. (20 points) Use a multiple Logistic Regression model using all the above variables to determine the model fit at 95% significance. 
+# Which of the above variables significantly impact employee attrition? (20 points)
+# Provide your insights using model accuracy measures, a ROC curve, and other measures using a probability cut off of 50%. (20 points)
+# Provide your recommendations to the management based on insights generated from the above model. (10 points)
+```
+
+```{r}
+# load data
+employee_data <- read_excel("Employee_Data_Project.xlsx")
+
+# convert dependent variable to binary instead of yes/no
+employee_data <- employee_data %>%
+  mutate(Attrition = case_when(
+    Attrition == "Yes" ~ 1,
+    Attrition == "No" ~ 0))
+
+# reorder data
+col_order <- c("Age", "BusinessTravel", "DistanceFromHome", "Education", "EmployeeID", "Gender", "JobLevel", "MaritalStatus", "Income", "NumCompaniesWorked", "StandardHours", "TotalWorkingYears", "TrainingTimesLastYear", "YearsAtCompany", "YearsWithCurrManager", "EnvironmentSatisfaction", "JobSatisfaction", "Attrition")
+employee_data <- employee_data[, col_order]
+```
+
+```{r}
+# train test split (stratified random sampling)
+
+# set the index using the caret splitting
+index <- createDataPartition(y = employee_data$Attrition,
+                             p = 0.70,
+                             list = FALSE)
+
+# training set
+employee_data_train <- employee_data[index, ]
+
+# testing set
+employee_data_test <- employee_data[-index, ]
+```
+
+```{r warning=FALSE}
+# edit data types
+## EDIT TEST SET
+employee_data_train <- employee_data_train %>%
+  mutate(TotalWorkingYears = as.numeric(TotalWorkingYears),
+         NumCompaniesWorked = as.numeric(NumCompaniesWorked),
+         Education = as.numeric(Education),
+         EnvironmentSatisfaction = as.numeric(EnvironmentSatisfaction),
+         JobSatisfaction = as.numeric(JobSatisfaction)) %>%
+  mutate(Attrition = as.factor(Attrition),
+         BusinessTravel = as.factor(BusinessTravel),
+         Gender = as.factor(Gender),
+         JobLevel = as.factor(JobLevel),
+         MaritalStatus = as.factor(MaritalStatus))
+
+# inspect data types
+summary(employee_data_train)
+```
+
+
+
+```{r}
+# exploration of missing data
+
+# ~~ ggplot ~~
+
+# total working years
+total_working_years_distribution <- employee_data_train %>%
+  ggplot() +
+  aes(x = TotalWorkingYears) + 
+  geom_histogram(fill = "cadetblue",
+                 color = "black",
+                 aes(y = ..density..)) +
+  geom_density(color = "coral",
+               size = 1) +
+  labs(x = "Total Working Years",
+       y = "Density") +
+  ggplot_theme
+
+num_companies_worked_distribution <- employee_data_train %>%
+  ggplot() +
+  aes(x = NumCompaniesWorked) + 
+  geom_histogram(fill = "cadetblue",
+                 color = "black",
+                 aes(y = ..density..),
+                 binwidth = 1) +
+  geom_density(color = "coral",
+               size = 1) +
+  labs(x = "Number of Companies Worked",
+       y = "Density") +
+  ggplot_theme
+
+# environment satisfaction
+environment_satisfaction_distribution <- employee_data_train %>%
+  ggplot() +
+  aes(x = EnvironmentSatisfaction) + 
+  geom_bar(fill = "cadetblue",
+                 color = "black") + 
+  labs(x = "Environment Satisfaction",
+       y = "Count") +
+  ggplot_theme
+
+# job satisfaction
+job_satisfaction_distribution <- employee_data_train %>%
+  ggplot() +
+  aes(x = JobSatisfaction) + 
+  geom_bar(fill = "cadetblue",
+                 color = "black") + 
+  labs(x = "Job Satisfaction",
+       y = "Count") +
+  ggplot_theme
+
+
+
+# ~~ cowplot ~~
+
+# title
+distribution_title <- ggdraw() + 
+  draw_label("Distributions of Predictors with Missing Data",
+             fontface = "bold",
+             x = 0,
+             hjust = -0.3) + 
+  theme(plot.margin = margin (0, 0, 0, 7))
+
+# caption
+distribution_source <- ggdraw() + 
+  draw_label("Source: Canterra",
+             x = 0,
+             hjust = 0,
+             size = 10) + 
+  theme(plot.margin = margin (0, 0, 0, 7))
+
+# distribution plots
+dist_plots <- plot_grid(total_working_years_distribution,
+                        num_companies_worked_distribution,
+                        environment_satisfaction_distribution,
+                        job_satisfaction_distribution,
+                        ncol = 2)
+
+# final cowplot
+plot_grid(distribution_title,
+          dist_plots,
+          distribution_source,
+          ncol = 1,
+          rel_heights = c(0.1, 1))
+
+```
+
+```{r}
+# handle missing data
+
+# total working years: impute median since it's positively skewed
+# number of companies worked: impute the median since it's positively skewed
+# environment satisfaction: put it at the mean
+# job satisfaction: put it at the mean
+## EDIT TEST SET
+employee_data_train <- employee_data_train %>%
+  # mutate total working years
+  mutate_at(vars(TotalWorkingYears),
+            ~ifelse(is.na(.), median(., na.rm = TRUE), .)) %>%
+  # mutate number of companies worked at
+  mutate_at(vars(NumCompaniesWorked),
+            ~ifelse(is.na(.), median(., na.rm = TRUE), .)) %>%
+  # mutate job satisfaction
+  mutate_at(vars(JobSatisfaction),
+            ~ifelse(is.na(.), mean(., na.rm = TRUE), .)) %>%
+  # muatte environment satisfaction
+  mutate_at(vars(EnvironmentSatisfaction),
+            ~ifelse(is.na(.), mean(., na.rm = TRUE), .)) %>%
+  # convert total working years and number of companies worked to numeric
+  mutate(TotalWorkingYears = as.numeric(TotalWorkingYears),
+         NumCompaniesWorked = as.numeric(NumCompaniesWorked)) %>%
+  # ensure categories are factors
+  mutate(Attrition = as.factor(Attrition),
+         BusinessTravel = as.factor(BusinessTravel),
+         Gender = as.factor(Gender),
+         JobLevel = as.factor(JobLevel),
+         MaritalStatus = as.factor(MaritalStatus)) %>%
+  
+  dplyr::select(-c(EmployeeID, StandardHours))
+
+# inspect to ensure the data was changed and there are no remaining missing values
+summary(employee_data_train)
+```
+
+```{r}
+# exploration of management's assumptions
+
+# ~~  plots ~~
+
+# job satisfaction
+job_satisfaction_attrition <- employee_data_train %>%
+  ggplot() +
+  aes(x = JobSatisfaction ,
+      y = Attrition) + 
+  geom_jitter(color = "cadetblue",
+              alpha = 1/3) + 
+  labs(x = "Job Satisfaction",
+       y = "Attrition") +
+  scale_y_discrete(labels = c("No", "Yes")) + 
+  ggplot_theme
+
+# years at the company
+years_at_company_attrition <- employee_data_train %>%
+  ggplot() +
+  aes(x = YearsAtCompany ,
+      y = Attrition) + 
+  geom_jitter(color = "cadetblue",
+              alpha = 1/3) + 
+  labs(x = "Years at Canterra",
+       y = "Attrition") +
+  scale_y_discrete(labels = c("No", "Yes")) + 
+  ggplot_theme
+
+# total working years
+total_working_years_attrition <- employee_data_train %>%
+  ggplot() +
+  aes(x = TotalWorkingYears ,
+      y = Attrition) + 
+  geom_jitter(color = "cadetblue",
+              alpha = 1/3) + 
+  labs(x = "Total Working Years",
+       y = "Attrition") +
+  scale_y_discrete(labels = c("No", "Yes")) + 
+  ggplot_theme
+
+
+
+# ~~ cowplot ~~
+
+# title
+attrition_title <- ggdraw() + 
+  draw_label("Attrition by Management's Assumed Predictors",
+             fontface = "bold",
+             x = 0,
+             hjust = -0.3) + 
+  theme(plot.margin = margin (0, 0, 0, 7))
+
+# caption
+attrition_source <- ggdraw() + 
+  draw_label("Source: Canterra",
+             x = 0,
+             hjust = 0,
+             size = 10) + 
+  theme(plot.margin = margin (0, 0, 0, 7))
+
+# distribution plots
+attr_plots_0_p1 <- plot_grid(job_satisfaction_attrition,
+                        years_at_company_attrition,
+                        ncol = 2)
+
+# layer in total working years
+attr_plots_0_p2 <- plot_grid(attr_plots_0_p1,
+                             total_working_years_attrition,
+                             ncol = 1)
+
+
+# final cowplot
+plot_grid(attrition_title,
+          attr_plots_0_p2,
+          attrition_source,
+          ncol = 1,
+          rel_heights = c(0.1, 1))
+```
+
+```{r}
+# exploration of employee demographics
+
+# ~~  plots ~~
+
+# job satisfaction
+gender_attrition <- employee_data_train %>%
+  ggplot() +
+  aes(x = Gender ,
+      y = Attrition) + 
+  geom_jitter(color = "cadetblue",
+              alpha = 1/3) + 
+  labs(x = "Gender",
+       y = "Attrition") +
+  scale_y_discrete(labels = c("No", "Yes")) + 
+  ggplot_theme
+
+# years at the company
+education_attrition <- employee_data_train %>%
+  ggplot() +
+  aes(x = Education ,
+      y = Attrition) + 
+  geom_jitter(color = "cadetblue",
+              alpha = 1/3) + 
+  labs(x = "Education",
+       y = "Attrition") +
+  scale_y_discrete(labels = c("No", "Yes")) + 
+  ggplot_theme
+
+# total working years
+age_attrition <- employee_data_train %>%
+  ggplot() +
+  aes(x = Age ,
+      y = Attrition) + 
+  geom_jitter(color = "cadetblue",
+              alpha = 1/3) + 
+  labs(x = "Age",
+       y = "Attrition") +
+  scale_y_discrete(labels = c("No", "Yes")) + 
+  ggplot_theme
+
+
+
+# ~~ cowplot ~~
+
+# title
+attrition_title_1 <- ggdraw() + 
+  draw_label("Attrition by Employee Demographics",
+             fontface = "bold",
+             x = 0,
+             hjust = -0.5) + 
+  theme(plot.margin = margin (0, 0, 0, 7))
+
+# caption
+attrition_source <- ggdraw() + 
+  draw_label("Source: Canterra",
+             x = 0,
+             hjust = 0,
+             size = 10) + 
+  theme(plot.margin = margin (0, 0, 0, 7))
+
+# distribution plots
+attr_plots_1_p1 <- plot_grid(gender_attrition,
+                             education_attrition,
+                             ncol = 2)
+
+# layer in age
+attr_plots_1_p2 <- plot_grid(attr_plots_1_p1,
+                             age_attrition,
+                             ncol = 1)
+
+# final cowplot
+plot_grid(attrition_title_1,
+          attr_plots_1_p2,
+          attrition_source,
+          ncol = 1,
+          rel_heights = c(0.1, 1))
+```
+
+
+```{r}
+# compare splits
+employee_data %>%
+  group_by(Attrition) %>%
+  summarize(count = n()) %>%
+  mutate(proportion = count / sum(count, na.rm = TRUE))
+
+employee_data_train %>%
+  group_by(Attrition) %>%
+  summarize(count = n()) %>%
+  mutate(proportion = count / sum(count, na.rm = TRUE))
+```
+```{r}
+# random over sample the attrition (1) and undersample the lack of attrition (0)
+employee_data_train_overunder <- ovun.sample(formula = Attrition ~ .,
+                                            data = employee_data_train,
+                                            method = "both",
+                                            N = nrow(employee_data_train),
+                                            p = 0.5,
+                                            seed = 1337)$data
+
+# random over sample the attrition (1)
+employee_data_train_over <- ovun.sample(formula = Attrition ~ .,
+                                        data = employee_data_train,
+                                        method = "over",
+                                        p = 0.5,
+                                        seed = 1337)$data
+
+# random under sample the lack of attrition (0)
+employee_data_train_under <- ovun.sample(formula = Attrition ~ .,
+                                        data = employee_data_train,
+                                        method = "under",
+                                        p = 0.5,
+                                        seed = 1337)$data
+
+# ROSE sample of synthetic data
+employee_data_train_rose <- ROSE(formula = Attrition ~.,
+                                 data = employee_data_train,
+                                 p = 0.5,
+                                 seed = 1337)$data
+
+
+# explore distribution of the dependent variable
+employee_data_train %>%
+  group_by(Attrition) %>%
+  summarize(count = n()) %>%
+  mutate(proportion = count / sum(count, na.rm = TRUE))
+
+employee_data_train_overunder %>%
+  group_by(Attrition) %>%
+  summarize(count = n()) %>%
+  mutate(proportion = count / sum(count, na.rm = TRUE))
+
+employee_data_train_over %>%
+  group_by(Attrition) %>%
+  summarize(count = n()) %>%
+  mutate(proportion = count / sum(count, na.rm = TRUE))
+
+employee_data_train_under %>%
+  group_by(Attrition) %>%
+  summarize(count = n()) %>%
+  mutate(proportion = count / sum(count, na.rm = TRUE))
+
+employee_data_train_rose %>%
+  group_by(Attrition) %>%
+  summarize(count = n()) %>%
+  mutate(proportion = count / sum(count, na.rm = TRUE))
+
+```
+
+```{r warning=FALSE}
+# choosing the best method for weighting samples
+# under-weighting the lack of attrition is the lowest AIC and thus will be used
+model_all <- glm(Attrition ~ ., family = "binomial", employee_data_train)
+model_all_overunder <- glm(Attrition ~ ., family = "binomial", employee_data_train_overunder)
+model_all_over <- glm(Attrition ~ ., family = "binomial", employee_data_train_over)
+model_all_under <- glm(Attrition ~ ., family = "binomial", employee_data_train_under)
+model_all_rose <- glm(Attrition ~ ., family = "binomial", employee_data_train_rose)
+
+# stargazer to compare up/down sampling methods
+stargazer(model_all,
+          model_all_overunder,
+          model_all_over,
+          model_all_under,
+          model_all_rose,
+          type = "text",
+          title = "Regression Results",
+          align = TRUE,
+          single.row = TRUE)
+```
+
+```{r}
+# model 0: management's hypothesis
+model_0 <- glm(Attrition ~ JobSatisfaction + TotalWorkingYears + YearsAtCompany, family = "binomial", employee_data_train_under)
+
+# make predictions
+model_0_train_preds <-predict(model_0, newdata = employee_data_train, type = "response")
+employee_data_train_model_0 <- employee_data_train
+employee_data_train_model_0$preds <- ifelse(model_0_train_preds >= 0.5, 1, 0)
+
+# confusion matrix
+confusionMatrix(data = as.factor(employee_data_train_model_0$preds),
+                reference = as.factor(employee_data_train_model_0$Attrition),
+                positive = "1")
+
+# ROC curve
+roc.curve(employee_data_train_model_0$Attrition,
+          employee_data_train_model_0$preds)
+
+# VIF
+vif(model_0)
+
+# summary
+summary(model_0)
+```
+
+```{r}
+# model 1: employee demographics
+model_1 <- glm(Attrition ~ Gender + Education + Age, family = "binomial", employee_data_train_under)
+
+# make predictions
+model_1_train_preds <-predict(model_1, newdata = employee_data_train, type = "response")
+employee_data_train_model_1 <- employee_data_train
+employee_data_train_model_1$preds <- ifelse(model_1_train_preds >= 0.5, 1, 0)
+
+# confusion matrix
+confusionMatrix(data = as.factor(employee_data_train_model_1$preds),
+                reference = as.factor(employee_data_train_model_1$Attrition),
+                positive = "1")
+
+# ROC curve
+roc.curve(employee_data_train_model_1$Attrition,
+          employee_data_train_model_1$preds)
+
+# VIF
+vif(model_1)
+
+# summary
+summary(model_1)
+```
+
+```{r}
+# model 2: management's hypothesis + employee demographics
+model_2 <- glm(Attrition ~ JobSatisfaction + TotalWorkingYears + YearsAtCompany + Gender + Education + Age, family = "binomial", employee_data_train_under)
+
+# make predictions
+model_2_train_preds <-predict(model_2, newdata = employee_data_train, type = "response")
+employee_data_train_model_2 <- employee_data_train
+employee_data_train_model_2$preds <- ifelse(model_2_train_preds >= 0.5, 1, 0)
+
+# confusion matrix
+confusionMatrix(data = as.factor(employee_data_train_model_2$preds),
+                reference = as.factor(employee_data_train_model_2$Attrition),
+                positive = "1")
+
+# ROC curve
+roc.curve(employee_data_train_model_2$Attrition,
+          employee_data_train_model_2$preds)
+
+# VIF
+vif(model_2)
+
+# summary
+summary(model_2)
+```
+
+
+```{r}
+# see the stargazer output of the first three models to answer question 1
+stargazer(model_0,
+          model_1,
+          model_2,
+          type = "text",
+          title = "Regression Results",
+          align = TRUE,
+          single.row = TRUE)
+```
+
+```{r}
+# subset for the relevant columns
+employee_data_train_under <- employee_data_train_under %>%
+  dplyr::select(JobSatisfaction, TotalWorkingYears, YearsAtCompany, Gender, Education, Age, Attrition)
+
+
+# bestglm backward
+bestglm_output <- bestglm(employee_data_train_under,
+                          family = binomial,
+                          IC = "AIC",
+                          method = "exhaustive",
+                          nvmax = 2)
+
+# view the best model by AIC
+bestglm_output$BestModels
+```
+
+```{r}
+# final model
+final_model <- glm(Attrition ~ JobSatisfaction + TotalWorkingYears, family = "binomial", data = employee_data_train_under)
+
+# ~~ train ~~
+
+# make predictions: train
+final_model_train_preds <-predict(final_model, newdata = employee_data_train, type = "response")
+employee_data_train_final_model <- employee_data_train
+employee_data_train_final_model$preds <- ifelse(final_model_train_preds >= 0.5, 1, 0)
+
+# confusion matrix
+confusionMatrix(data = as.factor(employee_data_train_final_model$preds),
+                reference = as.factor(employee_data_train_final_model$Attrition),
+                positive = "1")
+
+# ROC curve
+roc.curve(employee_data_train_final_model$Attrition,
+          employee_data_train_final_model$preds)
+
+# VIF
+vif(final_model)
+
+# summary
+summary(final_model)
+```
+```{r}
+# test data mutations to match
+employee_data_test_final_model <- employee_data_test %>%
+  mutate(TotalWorkingYears = as.numeric(TotalWorkingYears),
+         NumCompaniesWorked = as.numeric(NumCompaniesWorked),
+         Education = as.numeric(Education),
+         EnvironmentSatisfaction = as.numeric(EnvironmentSatisfaction),
+         JobSatisfaction = as.numeric(JobSatisfaction)) %>%
+  mutate(Attrition = as.factor(Attrition),
+         BusinessTravel = as.factor(BusinessTravel),
+         Gender = as.factor(Gender),
+         JobLevel = as.factor(JobLevel),
+         MaritalStatus = as.factor(MaritalStatus)) %>%
+  # mutate total working years
+  mutate_at(vars(TotalWorkingYears),
+            ~ifelse(is.na(.), median(., na.rm = TRUE), .)) %>%
+  # mutate number of companies worked at
+  mutate_at(vars(NumCompaniesWorked),
+            ~ifelse(is.na(.), median(., na.rm = TRUE), .)) %>%
+  # mutate job satisfaction
+  mutate_at(vars(JobSatisfaction),
+            ~ifelse(is.na(.), mean(., na.rm = TRUE), .)) %>%
+  # muatte environment satisfaction
+  mutate_at(vars(EnvironmentSatisfaction),
+            ~ifelse(is.na(.), mean(., na.rm = TRUE), .)) %>%
+  # convert total working years and number of companies worked to numeric
+  mutate(TotalWorkingYears = as.numeric(TotalWorkingYears),
+         NumCompaniesWorked = as.numeric(NumCompaniesWorked)) %>%
+  # ensure categories are factors
+  mutate(Attrition = as.factor(Attrition),
+         BusinessTravel = as.factor(BusinessTravel),
+         Gender = as.factor(Gender),
+         JobLevel = as.factor(JobLevel),
+         MaritalStatus = as.factor(MaritalStatus)) %>%
+  dplyr::select(JobSatisfaction, TotalWorkingYears, Attrition)
+
+```
+
+```{r}
+# ~~ test ~~
+
+# make predictions: test
+final_model_test_preds <-predict(final_model, newdata = employee_data_test_final_model, type = "response")
+employee_data_test_final_model$preds <- ifelse(final_model_test_preds >= 0.5, 1, 0)
+
+# confusion matrix
+confusionMatrix(data = as.factor(employee_data_test_final_model$preds),
+                reference = as.factor(employee_data_test_final_model$Attrition),
+                positive = "1")
+
+# ROC curve
+roc.curve(employee_data_test_final_model$Attrition,
+          employee_data_test_final_model$preds)
+```
+
+
+
